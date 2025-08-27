@@ -1,0 +1,45 @@
+Analyze social media security threats using the provided datasets and external intelligence sources.
+
+Datasets provided:
+- `user-posts.json`: Social media posts with metadata, sentiment scores, and engagement metrics
+- `network-connections.csv`: User connections/friendship data for network analysis  
+- `security-incidents.csv`: Reported security incidents (phishing, malware, account takeovers)
+
+External data sources to integrate:
+1. Scrape recent cybersecurity threat intelligence from the NIST CVE database page at:
+   https://nvd.nist.gov/vuln/search (focus on social media related vulnerabilities)
+2. Use LLM sentiment analysis and text extraction on the provided social media posts
+
+Return a JSON object with keys:
+- `total_posts_analyzed`: number of posts in dataset
+- `high_risk_users`: array of user_ids with suspicious activity patterns
+- `sentiment_distribution`: object with counts of positive/negative/neutral posts
+- `phishing_detection_rate`: percentage of successfully identified phishing attempts
+- `network_centrality_analysis`: object with top 5 most influential users by betweenness centrality
+- `threat_intelligence_summary`: array of latest 5 CVE vulnerabilities related to social platforms
+- `malicious_content_classification`: object with counts of different threat types detected
+- `user_behavior_anomalies`: array of user_ids showing statistical anomalies in posting patterns
+- `social_network_graph`: base64 PNG network visualization showing user connections colored by risk level, under 100kB
+- `threat_timeline_chart`: base64 PNG time series showing security incidents over time by type, under 100kB  
+- `sentiment_heatmap`: base64 PNG heatmap of sentiment scores across user demographics, under 100kB
+- `risk_assessment_dashboard`: base64 PNG dashboard showing key security metrics and alerts, under 100kB
+- `predictive_threat_model`: predicted number of security incidents next month based on trend analysis
+- `geospatial_threat_map`: base64 PNG world map showing geographic distribution of security incidents, under 100kB
+- `content_moderation_metrics`: object with precision/recall scores for automated threat detection
+
+Answer these questions:
+1. How many social media posts were analyzed in total?
+2. Which users exhibit the highest risk behavioral patterns?
+3. What is the overall sentiment distribution across all posts?
+4. What percentage of phishing attempts were successfully detected by the system?
+5. Who are the top 5 most influential users based on network centrality analysis?
+6. What are the latest 5 CVE vulnerabilities affecting social media platforms?
+7. What types of malicious content were detected and in what quantities?
+8. Which users show statistical anomalies in their posting behavior patterns?
+9. Create a network graph visualization showing user connections colored by security risk level
+10. Plot security incidents over time broken down by incident type
+11. Generate a sentiment analysis heatmap across different user demographics
+12. Build a security dashboard showing key threat metrics and alert status
+13. Predict the expected number of security incidents for next month using trend analysis
+14. Create a geographic visualization showing the global distribution of security threats
+15. Calculate precision and recall metrics for the automated content moderation system

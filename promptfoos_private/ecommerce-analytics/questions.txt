@@ -1,0 +1,39 @@
+Get information about the largest internet companies. Use only the following page as the source of that information: https://en.wikipedia.org/wiki/List_of_largest_Internet_companies
+
+Then analyze the provided `user-behavior.csv` dataset containing:
+- `user_id`: unique identifier
+- `session_duration_min`: session length in minutes  
+- `pages_viewed`: number of pages viewed
+- `cart_items`: items added to cart
+- `purchase_amount`: purchase value in USD (0 if no purchase)
+- `device_type`: mobile/desktop/tablet
+- `traffic_source`: organic/paid/social/direct
+- `time_spent_on_product_pages_min`: time on product pages
+
+Return a JSON object with keys:
+-⁠ `top_3_internet_companies` ⁠: array of top 3 company names by revenue, headquartered in China
+- `total_users`: number
+- `conversion_rate`: percentage (users with purchases / total users)
+- `avg_session_duration`: number (minutes)
+- `session_purchase_correlation`: correlation between session duration and purchase amount
+- `device_performance`: object with conversion rates by device type
+- `traffic_source_analysis`: object with average purchase amounts by source
+- `user_segmentation_chart`: base64 PNG scatter plot of session duration vs purchase amount, colored by device type, under 100kB
+- `conversion_funnel_chart`: base64 PNG funnel chart showing: visitors → cart adds → purchases, under 100kB
+- `predictive_model_accuracy`: R² score from linear regression model predicting purchase amount using session duration, pages viewed, and cart items
+- `outlier_detection`: array of user_ids that are outliers in purchase behavior (>2 std dev from mean)
+- `geospatial_heatmap`: base64 PNG heatmap showing purchase density by hypothetical lat/lng coordinates (generate random coordinates for top purchasers), under 100kB
+
+Answer these questions:
+1.⁠ ⁠What are the top 3 largest internet companies by revenue, headquartered in China?
+2. How many total users are in the dataset?
+3. What is the overall conversion rate (percentage of users who made a purchase)?
+4. What is the average session duration across all users?
+5. What is the correlation between session duration and purchase amount?
+6. What are the conversion rates for each device type?
+7. What are the average purchase amounts by traffic source?
+8. Create a scatter plot showing session duration vs purchase amount, colored by device type
+9. Create a conversion funnel visualization showing the progression from visitors to purchases
+10. Build a linear regression model to predict purchase amount and report its R² accuracy
+11. Identify users who are outliers in purchase behavior (statistical anomaly detection)
+12. Generate a geospatial heatmap of purchase activity using synthetic coordinates

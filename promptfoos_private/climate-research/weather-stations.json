@@ -1,0 +1,161 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS001",
+        "name": "New York Central Park",
+        "country": "United States",
+        "elevation_m": 42
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-73.9654, 40.7829]
+      }
+    },
+    {
+      "type": "Feature", 
+      "properties": {
+        "station_id": "WS002",
+        "name": "London Heathrow",
+        "country": "United Kingdom",
+        "elevation_m": 25
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.4491, 51.4700]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS003", 
+        "name": "Tokyo Haneda",
+        "country": "Japan",
+        "elevation_m": 6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.7798, 35.5494]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS004",
+        "name": "Sydney Observatory",
+        "country": "Australia", 
+        "elevation_m": 39
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [151.2059, -33.8596]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS005",
+        "name": "Mumbai Colaba",
+        "country": "India",
+        "elevation_m": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [72.8315, 18.9067]
+      }
+    },
+    {
+      "type": "Feature", 
+      "properties": {
+        "station_id": "WS006",
+        "name": "São Paulo Mirante",
+        "country": "Brazil",
+        "elevation_m": 792
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.6219, -23.4969]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS007",
+        "name": "Cairo International",
+        "country": "Egypt",
+        "elevation_m": 74
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [31.4135, 30.1226]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS008",
+        "name": "Moscow Domodedovo",
+        "country": "Russia",
+        "elevation_m": 179
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [37.9061, 55.4089]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS009", 
+        "name": "Cape Town Observatory",
+        "country": "South Africa",
+        "elevation_m": 53
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [18.4775, -33.9344]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS010",
+        "name": "Beijing Capital",
+        "country": "China", 
+        "elevation_m": 35
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [116.5975, 40.0801]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS011",
+        "name": "Reykjavik Airport",
+        "country": "Iceland",
+        "elevation_m": 48
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-21.9426, 64.1315]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "WS012",
+        "name": "Nairobi Wilson",
+        "country": "Kenya",
+        "elevation_m": 1679
+      },
+      "geometry": {
+        "type": "Point", 
+        "coordinates": [36.8155, -1.3217]
+      }
+    }
+  ]
+}

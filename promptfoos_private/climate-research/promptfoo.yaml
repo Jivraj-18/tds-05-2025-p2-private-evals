@@ -1,0 +1,226 @@
+description: "TDS Data Analyst Agent — Climate Research Analysis (multi-disciplinary eval)"
+providers:
+  - 'exec: uv run run.py "{{ env.PROVIDER_URL }}"'
+defaultTest:
+  options:
+    provider:
+      id: openai:gpt-4.1-nano
+    transform: JSON.parse(output)
+tests:
+  - vars:
+      question: file://questions.txt
+    assert:
+    - type: is-json
+      value:
+        type: object
+        required:
+          [
+            avg_temp_anomaly_last_decade,
+            highest_co2_emitter_2022,
+            weather_stations_count,
+            temp_trend_slope,
+            co2_temperature_correlation,
+            climate_change_effects,
+            current_weather_data,
+            climate_forecast_model,
+            regional_climate_analysis,
+            extreme_weather_frequency,
+            carbon_budget_analysis,
+            temperature_anomaly_timeseries,
+            co2_emissions_choropleth,
+            weather_stations_heatmap,
+            climate_network_graph
+          ]
+        properties:
+          avg_temp_anomaly_last_decade: { type: number }
+          highest_co2_emitter_2022: { type: string }
+          weather_stations_count: { type: number }
+          temp_trend_slope: { type: number }
+          co2_temperature_correlation: { type: number }
+          climate_change_effects: { type: array, minItems: 5, maxItems: 5 }
+          current_weather_data: { type: object }
+          climate_forecast_model: { type: number }
+          regional_climate_analysis: { type: object }
+          extreme_weather_frequency: { type: number }
+          carbon_budget_analysis: { type: number }
+          temperature_anomaly_timeseries: { type: string }
+          co2_emissions_choropleth: { type: string }
+          weather_stations_heatmap: { type: string }
+          climate_network_graph: { type: string }
+      weight: 5
+    # Temperature anomaly validation (precise value)
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["avg_temp_anomaly_last_decade"])
+        if abs(val - 0.933) <= 0.01:
+          return True
+        return False
+
+    # CO2 emitter validation (case insensitive)
+    - type: python
+      weight: 3
+      value: |
+        if output["highest_co2_emitter_2022"].lower() == "china":
+          return True
+        return False
+
+    # Weather stations count validation
+    - type: python
+      weight: 3
+      value: |
+        if output["weather_stations_count"] == 12:
+          return True
+        return False
+
+    # Temperature trend slope validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["temp_trend_slope"])
+        if abs(val - 0.007922) <= 0.001:
+          return True
+        return False
+
+    # CO2-temperature correlation validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["co2_temperature_correlation"])
+        if abs(val - (-0.7352)) <= 0.01:
+          return True
+        return False
+
+    # Climate forecast model validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["climate_forecast_model"])
+        if abs(val - 1.198) <= 0.01:
+          return True
+        return False
+
+    # Extreme weather frequency validation
+    - type: python
+      weight: 3
+      value: |
+        if output["extreme_weather_frequency"] == 0:
+          return True
+        return False
+
+    # Carbon budget analysis validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["carbon_budget_analysis"])
+        if abs(val - 41.66) <= 0.1:
+          return True
+        return False
+    - type: python
+      weight: 2
+      value: |
+        import requests
+        import json
+        
+        current_weather = output.get('current_weather_data', {})
+        
+        if not isinstance(current_weather, dict):
+            return False
+        
+        required_fields = ['city', 'current_temperature_celsius', 'current_humidity', 'current_pressure']
+        if not all(field in current_weather for field in required_fields):
+            return False
+        
+        city = current_weather.get('city', '')
+        if not city:
+            return False
+        
+        try:
+            # Fetch actual weather data
+            response = requests.get(f"https://wttr.in/{city}?format=j1", timeout=10)
+            if response.status_code == 200:
+                actual_data = response.json()
+                actual_temp = float(actual_data['current_condition'][0]['temp_C'])
+                actual_humidity = int(actual_data['current_condition'][0]['humidity'])
+                actual_pressure = float(actual_data['current_condition'][0]['pressure'])
+                
+                # Check if reported values are within reasonable range of actual
+                reported_temp = float(current_weather.get('current_temperature_celsius', 0))
+                reported_humidity = int(current_weather.get('current_humidity', 0))
+                reported_pressure = float(current_weather.get('current_pressure', 0))
+                
+                temp_close = abs(reported_temp - actual_temp) <= 5  # Within 5°C
+                humidity_close = abs(reported_humidity - actual_humidity) <= 20  # Within 20%
+                pressure_close = abs(reported_pressure - actual_pressure) <= 50  # Within 50 hPa
+                
+                return temp_close and humidity_close and pressure_close
+            else:
+                # If API fails, just check if values are reasonable
+                temp = float(current_weather.get('current_temperature_celsius', 0))
+                humidity = int(current_weather.get('current_humidity', 0))
+                pressure = float(current_weather.get('current_pressure', 0))
+                
+                return (-50 <= temp <= 60 and 0 <= humidity <= 100 and 800 <= pressure <= 1100)
+        except:
+            # If API fails, just check if values are reasonable
+            try:
+                temp = float(current_weather.get('current_temperature_celsius', 0))
+                humidity = int(current_weather.get('current_humidity', 0))
+                pressure = float(current_weather.get('current_pressure', 0))
+                
+                return (-50 <= temp <= 60 and 0 <= humidity <= 100 and 800 <= pressure <= 1100)
+            except:
+                return False
+
+        # Temperature anomaly time series chart validation
+    # Climate network graph validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the climate network graph. Score 1 only if (a) network visualization showing relationships between weather stations; (b) stations connected within reasonable distance (approximately 500km); (c) nodes and edges clearly visible; (d) file size < 100 kB. Respond JSON {network:bool,connections:bool,visibility:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["climate_network_graph"]}}"}},
+            {"type":"text","text":"Network visualization showing relationships between weather stations (connect stations within 500km)"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Temperature anomaly time series chart validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the temperature anomaly time series chart. Score 1 only if (a) line chart showing temperature anomalies over time; (b) clear trend line visible overlaying the data; (c) axes labeled with time/years and temperature anomaly values; (d) file size < 100 kB. Respond JSON {timeseries:bool,trendline:bool,axes:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["temperature_anomaly_timeseries"]}}"}},
+            {"type":"text","text":"Line chart of temperature anomalies over time with trend line"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # CO2 emissions choropleth map validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the CO2 emissions choropleth map. Score 1 only if (a) world map showing countries filled with colors; (b) color intensity represents CO2 emissions levels (darker/more intense = higher emissions); (c) color scale/legend visible; (d) file size < 100 kB. Respond JSON {worldmap:bool,colorintensity:bool,legend:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["co2_emissions_choropleth"]}}"}},
+            {"type":"text","text":"World map showing CO2 emissions by country using color intensity"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Weather stations heatmap validation
+    - type: llm-rubric
+      weight: 6
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the weather stations heatmap. Score 1 only if (a) global heatmap showing weather station density; (b) heat intensity shows concentration of stations (hot spots = high density); (c) geographic world layout clearly visible; (d) file size < 100 kB. Respond JSON {globalheatmap:bool,density:bool,geographic:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["weather_stations_heatmap"]}}"}},
+            {"type":"text","text":"Global heatmap of weather station density"}
+          ]}
+        ]
+      threshold: 0.99

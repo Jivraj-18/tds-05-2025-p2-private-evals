@@ -1,0 +1,45 @@
+Use the provided climate datasets and external APIs to perform comprehensive climate analysis.
+
+Datasets provided:
+- `temperature-anomalies.csv`: Global temperature anomalies by year (1880-2023)
+- `co2-emissions.json`: CO2 emissions data by country and year
+- `weather-stations.json`: Global weather station locations with metadata
+
+External data sources to use:
+1. Scrape current climate data from `https://wttr.in/{city_name}` with query parameter `format=j1`, choose a random city of your choice
+2. Extract climate research findings from the Wikipedia page "Effects of climate change" at:
+   `https://en.wikipedia.org/wiki/Effects_of_climate_change`
+
+Return a JSON object with keys:
+- `avg_temp_anomaly_last_decade`: average temperature anomaly 2014-2023
+- `highest_co2_emitter_2022`: country with highest CO2 emissions in 2022
+- `weather_stations_count`: total number of weather stations in dataset
+- `temp_trend_slope`: linear regression slope of temperature anomalies over time
+- `co2_temperature_correlation`: correlation between global CO2 and temperature anomalies
+- `climate_change_effects`: array of top 5 effects climate change effects mentioned in the wikipedia article
+- `current_weather_data`: object with keys city, current_temperature_celsius, current_humidity, current_pressure from `wttr.in` API Call result.
+- `temperature_anomaly_timeseries`: base64 PNG line chart of temperature anomalies over time with trend line, under 100kB
+- `co2_emissions_choropleth`: base64 PNG world map showing CO2 emissions by country using color intensity, under 100kB
+- `weather_stations_heatmap`: base64 PNG global heatmap of weather station density, under 100kB
+- `climate_forecast_model`: predicted temperature anomaly for 2030 using polynomial regression
+- `regional_climate_analysis`: object with temperature trends for Northern/Southern hemispheres separately
+- `extreme_weather_frequency`: count of years with temperature anomalies >2°C above baseline
+- `carbon_budget_analysis`: remaining years until 1.5°C target based on current emission trends
+- `climate_network_graph`: base64 PNG network visualization showing relationships between weather stations (connect stations within 500km), under 100kB
+
+Answer these questions:
+1. What is the average temperature anomaly for the last decade (2014-2023)?
+2. Which country had the highest CO2 emissions in 2022?
+3. How many weather stations are in the provided dataset?
+4. What is the linear trend slope of temperature anomalies over the entire period?
+5. What is the correlation between global CO2 levels and temperature anomalies?
+6. What are the top 5 effects of climate change mentioned in the Wikipedia article?
+7. What are the current weather conditions (temperature, humidity, pressure) for your chosen city?
+8. Create a time series visualization of temperature anomalies with a trend line
+9. Create a choropleth map showing CO2 emissions intensity by country
+10. Generate a heatmap showing the global distribution of weather stations
+11. Use polynomial regression to forecast the temperature anomaly for 2030
+12. Analyze temperature trends separately for Northern and Southern hemispheres
+13. Count how many years had extreme temperature anomalies (>2°C above baseline)
+14. Calculate remaining years to reach 1.5°C warming based on current trends
+15. Visualize weather station network connectivity (stations within 500km of each other)

@@ -1,0 +1,11 @@
+incident_id,user_id,incident_type,severity,date_reported,location,description,resolved
+SEC001,U12345,phishing,high,2024-01-15,New York USA,Suspicious link sharing in post P001,false
+SEC002,U34567,account_takeover,critical,2024-01-16,Unknown,Fake banking phishing attempt in post P003,false
+SEC003,U67890,malware,medium,2024-01-18,Toronto Canada,User reported clicking malicious link,true
+SEC004,U12345,spam,medium,2024-01-16,New York USA,Multiple suspicious promotional posts,false
+SEC005,U23456,privacy_breach,low,2024-01-14,California USA,Location data exposed in post metadata,true
+SEC006,U45678,fake_content,low,2024-01-17,Denver USA,AI-generated fake art images detected,true
+SEC007,U34567,bot_activity,high,2024-01-16,Unknown,Automated posting patterns detected,false
+SEC008,U78901,data_theft,medium,2024-01-19,Sydney Australia,Personal information harvesting attempt,true
+SEC009,U56789,harassment,medium,2024-01-18,London UK,Targeted malicious comments on posts,true
+SEC010,U12345,credential_theft,critical,2024-01-17,New York USA,Password reset requests from unusual locations,false

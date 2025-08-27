@@ -1,0 +1,210 @@
+description: "TDS Data Analyst Agent — E-commerce Analytics (multi-disciplinary eval)"
+
+providers:
+  - 'exec: uv run run.py "{{ env.PROVIDER_URL }}"'
+defaultTest:
+  options:
+    provider:
+      id: openai:gpt-4.1-nano
+    transform: JSON.parse(output)
+tests:
+  - vars:
+      question: file://questions.txt
+    assert:
+      # Structural gate — no score, hard-fail if not proper JSON object
+      - type: is-json
+        value:
+          type: object
+          required:
+            [
+              top_3_internet_companies,
+              total_users,
+              conversion_rate,
+              avg_session_duration,
+              session_purchase_correlation,
+              device_performance,
+              traffic_source_analysis,
+              predictive_model_accuracy,
+              outlier_detection,
+              user_segmentation_chart,
+              conversion_funnel_chart,
+              geospatial_heatmap
+            ]
+          properties:
+            top_3_internet_companies: { type: array, minItems: 3, maxItems: 3 }
+            total_users: { type: number }
+            conversion_rate: { type: number }
+            avg_session_duration: { type: number }
+            session_purchase_correlation: { type: number }
+            device_performance: { type: object }
+            traffic_source_analysis: { type: object }
+            predictive_model_accuracy: { type: number }
+            outlier_detection: { type: array }
+            user_segmentation_chart: { type: string }
+            conversion_funnel_chart: { type: string }
+            geospatial_heatmap: { type: string }
+
+      # Total users validation
+      - type: python
+        weight: 3
+        value: |
+          if output["total_users"] == 30:
+            return True
+          return False
+
+      # Conversion rate validation
+      - type: python
+        weight: 3
+        value: |
+          val = float(output["conversion_rate"])
+          if abs(val - 73.33) <= 0.1:
+            return True
+          return False
+
+      # Average session duration validation
+      - type: python
+        weight: 3
+        value: |
+          val = float(output["avg_session_duration"])
+          if abs(val - 32.93) <= 0.1:
+            return True
+          return False
+
+      # Session purchase correlation validation
+      - type: python
+        weight: 3
+        value: |
+          val = float(output["session_purchase_correlation"])
+          if abs(val - 0.9637) <= 0.01:
+            return True
+          return False
+
+      # Predictive model accuracy validation
+      - type: python
+        weight: 3
+        value: |
+          val = float(output["predictive_model_accuracy"])
+          if abs(val - 0.9381) <= 0.01:
+            return True
+          return False
+
+      # Web scraping verification - top 3 internet companies
+      - type: python
+        weight: 3
+        value: |
+          companies = output.get('top_3_internet_companies', [])
+          required = {'alibaba', 'jd.com', 'tencent'}
+          return (
+              isinstance(companies, list)
+              and len(companies) == 3
+              and all(isinstance(s, str) for s in companies)
+              and {s.strip().lower() for s in companies} == required
+          )
+
+      # Outlier detection validation
+      - type: python
+        weight: 3
+        value: |
+          outliers = output.get('outlier_detection', [])
+          expected_outliers = ["U007", "U018"]
+          
+          if not isinstance(outliers, list):
+            return False
+          
+          # Check if the expected outliers are present (case insensitive)
+          outliers_normalized = [str(o).upper() for o in outliers]
+          expected_normalized = [str(o).upper() for o in expected_outliers]
+          
+          matches = sum(1 for expected in expected_normalized if expected in outliers_normalized)
+          return matches >= 2
+
+      # Device performance structure validation
+      - type: python
+        weight: 4
+        value: |
+          device_perf = output.get('device_performance', {})
+          
+          if not isinstance(device_perf, dict):
+            return False
+          
+          required_devices = ['mobile', 'desktop', 'tablet']
+          expected_values = {'mobile': 58.33, 'desktop': 100.0, 'tablet': 57.14}
+          
+          # Check if all required devices are present with reasonable values
+          valid_devices = 0
+          for device in required_devices:
+            if device in device_perf:
+              try:
+                val = float(device_perf[device])
+                expected_val = expected_values[device]
+                if abs(val - expected_val) <= 1.0:  # Allow 1% tolerance
+                  valid_devices += 1
+              except:
+                pass
+          
+          return valid_devices >= 2  # At least 2 devices must match
+
+      # Traffic source analysis validation
+      - type: python
+        weight: 4
+        value: |
+          traffic_sources = output.get('traffic_source_analysis', {})
+          
+          if not isinstance(traffic_sources, dict):
+            return False
+          
+          required_sources = ['organic', 'paid', 'social', 'direct']
+          expected_values = {'organic': 278.66, 'paid': 1058.24, 'social': 0.0, 'direct': 735.85}
+          
+          # Check if all required sources are present with reasonable values
+          valid_sources = 0
+          for source in required_sources:
+            if source in traffic_sources:
+              try:
+                val = float(traffic_sources[source])
+                expected_val = expected_values[source]
+                if abs(val - expected_val) <= 10.0:  # Allow 10 unit tolerance
+                  valid_sources += 1
+              except:
+                pass
+          
+          return valid_sources >= 3  # At least 3 sources must match
+
+        # User segmentation chart validation
+      - type: llm-rubric
+        weight: 8
+        rubricPrompt: |
+          [
+            {"role":"system","content":"Grade the user segmentation scatter plot. Score 1 only if (a) scatter plot with session duration vs purchase amount; (b) points colored by device type (mobile/desktop/tablet); (c) axes clearly labeled; (d) file size < 100 kB. Respond JSON {scatterplot:bool,devicecolors:bool,axes:bool,size:bool,score:number}"},
+            {"role":"user","content":[
+              {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["user_segmentation_chart"]}}"}},
+              {"type":"text","text":"Scatter plot of session duration vs purchase amount, colored by device type"}
+            ]}
+          ]
+        threshold: 0.99
+
+      # Conversion funnel chart validation
+      - type: llm-rubric
+        weight: 8
+        rubricPrompt: |
+          [
+            {"role":"system","content":"Grade the conversion funnel chart. Score 1 only if (a) funnel chart showing progression from visitors to cart adds to purchases; (b) three distinct funnel stages visible; (c) decreasing width/numbers from top to bottom; (d) file size < 100 kB. Respond JSON {funnelchart:bool,threestages:bool,progression:bool,size:bool,score:number}"},
+            {"role":"user","content":[
+              {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["conversion_funnel_chart"]}}"}},
+              {"type":"text","text":"Funnel chart showing: visitors → cart adds → purchases"}
+            ]}
+          ]
+        threshold: 0.99
+
+      # Geospatial heatmap validation
+      - type: llm-rubric
+        weight: 6
+        rubricPrompt: |
+          [
+            {"role":"system","content":"Grade the geospatial heatmap. Score 1 only if (a) heatmap showing purchase density by geographic coordinates; (b) heat intensity varies across locations; (c) coordinate system or geographic layout visible; (d) file size < 100 kB. Respond JSON {geoheatmap:bool,density:bool,coordinates:bool,size:bool,score:number}"},
+            {"role":"user","content":[
+              {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["geospatial_heatmap"]}}"}},
+              {"type":"text","text":"Heatmap showing purchase density by lat/lng coordinates"}
+            ]}
+          ]
+        threshold: 0.99

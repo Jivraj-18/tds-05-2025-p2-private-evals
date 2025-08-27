@@ -1,0 +1,82 @@
+description: "TDS Data Analyst Agent – Social Media Security Analysis (multi-disciplinary eval)"
+
+providers:
+  - 'exec: uv run run.py "{{ env.PROVIDER_URL }}"'
+defaultTest:
+  options:
+    provider:
+      id: openai:gpt-4.1-nano
+    transform: JSON.parse(output)
+tests:
+  - vars:
+      question: file://questions.txt
+    assert:
+      # Structural gate – no score, hard-fail if not proper JSON object
+      - type: is-json
+        value: {type: object}
+        weight: 0
+
+      # Security analysis and threat intelligence (5 points)
+      - type: python
+        weight: 5
+        value: |
+          data = output
+          high_risk = data.get('high_risk_users', [])
+          phishing_rate = data.get('phishing_detection_rate')
+          threat_intel = data.get('threat_intelligence_summary', [])
+          malicious_content = data.get('malicious_content_classification', {})
+          print(isinstance(high_risk, list) and
+                isinstance(phishing_rate, (int, float)) and 0 <= phishing_rate <= 100 and
+                isinstance(threat_intel, list) and len(threat_intel) <= 5 and
+                isinstance(malicious_content, dict))
+
+      # LLM and AI analysis (4 points)
+      - type: python
+        weight: 4
+        value: |
+          data = output
+          sentiment_dist = data.get('sentiment_distribution', {})
+          anomalies = data.get('user_behavior_anomalies', [])
+          prediction = data.get('predictive_threat_model')
+          moderation_metrics = data.get('content_moderation_metrics', {})
+          print(isinstance(sentiment_dist, dict) and
+                isinstance(anomalies, list) and
+                isinstance(prediction, (int, float)) and prediction >= 0 and
+                isinstance(moderation_metrics, dict) and 'precision' in moderation_metrics)
+
+      # Network analysis and statistics (4 points)
+      - type: python
+        weight: 4
+        value: |
+          data = output
+          total_posts = data.get('total_posts_analyzed')
+          centrality = data.get('network_centrality_analysis', {})
+          print(isinstance(total_posts, int) and total_posts > 0 and
+                isinstance(centrality, dict))
+
+      # Complex security visualizations (7 points)
+      - type: llm-rubric
+        provider: openai:gpt-4o-mini
+        weight: 7
+        rubricPrompt: |
+          [
+            { "role": "system",
+              "content": "Grade the security visualizations. Award points for: \
+              (1) Network graph with risk-colored nodes (2 pts); \
+              (2) Timeline of security incidents (2 pts); \
+              (3) Security dashboard with metrics (1.5 pts); \
+              (4) Geographic threat map (1.5 pts). \
+              Each must be valid base64 PNG under 100kB. \
+              Respond as JSON: {network_valid:bool, timeline_valid:bool, dashboard_valid:bool, geo_valid:bool, total_score:number}"
+            },
+            { "role": "user",
+              "content": [
+                { "type": "image_url", "image_url": { "url": "{{output["social_network_graph"]}}" }},
+                { "type": "image_url", "image_url": { "url": "{{output["threat_timeline_chart"]}}" }},
+                { "type": "image_url", "image_url": { "url": "{{output["risk_assessment_dashboard"]}}" }},
+                { "type": "image_url", "image_url": { "url": "{{output["geospatial_threat_map"]}}" }},
+                { "type": "text", "text": "Evaluate these security analysis visualizations." }
+              ]
+            }
+          ]
+        threshold: 0.6
