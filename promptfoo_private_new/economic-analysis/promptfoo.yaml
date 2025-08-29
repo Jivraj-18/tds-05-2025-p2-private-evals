@@ -1,0 +1,227 @@
+description: "TDS Data Analyst Agent — Economic Growth Analysis (multi-disciplinary eval)"
+providers:
+  - 'exec: uv run run.py "{{ env.PROVIDER_URL }}"'
+defaultTest:
+  options:
+    provider:
+      id: openai:gpt-4.1-nano
+    transform: JSON.parse(output)
+tests:
+  - vars:
+      question: file://questions.txt
+    assert:
+    - type: is-json
+      value:
+        type: object
+        required:
+          [
+            avg_gdp_growth_2020_2022,
+            highest_gdp_per_capita_2022,
+            financial_centers_count,
+            gdp_correlation_with_market_cap,
+            top_performing_stock_index,
+            economic_indicators_wikipedia,
+            current_exchange_rates,
+            economic_forecast_2025,
+            regional_economic_analysis,
+            high_growth_countries_count,
+            economic_resilience_score,
+            gdp_growth_timeseries,
+            market_cap_vs_gdp_scatter,
+            financial_centers_map,
+            financial_network_graph
+          ]
+        properties:
+          avg_gdp_growth_2020_2022: { type: number }
+          highest_gdp_per_capita_2022: { type: string }
+          financial_centers_count: { type: number }
+          gdp_correlation_with_market_cap: { type: number }
+          top_performing_stock_index: { type: string }
+          economic_indicators_wikipedia: { type: array, minItems: 5, maxItems: 5 }
+          current_exchange_rates: { type: object }
+          economic_forecast_2025: { type: number }
+          regional_economic_analysis: { type: object }
+          high_growth_countries_count: { type: number }
+          economic_resilience_score: { type: number }
+          gdp_growth_timeseries: { type: string }
+          market_cap_vs_gdp_scatter: { type: string }
+          financial_centers_map: { type: string }
+          financial_network_graph: { type: string }
+      weight: 5
+
+    # GDP growth validation 
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["avg_gdp_growth_2020_2022"])
+        if abs(val - 0.1511131187281124) <= 0.01:
+          return True
+        return False
+
+    # Highest GDP per capita validation
+    - type: python
+      weight: 3
+      value: |
+        if output["highest_gdp_per_capita_2022"].lower() == "united states":
+          return True
+        return False
+
+    # Financial centers count validation
+    - type: python
+      weight: 3
+      value: |
+        if output["financial_centers_count"] == 12:
+          return True
+        return False
+
+    # Top performing stock index validation
+    - type: python
+      weight: 3
+      value: |
+        valid_indices = ["bse sensex", "sensex"]
+        if any(idx in output["top_performing_stock_index"].lower() for idx in valid_indices):
+          return True
+        return False
+
+    # High growth countries count validation
+    - type: python
+      weight: 3
+      value: |
+        if output["high_growth_countries_count"] == 8:
+          return True
+        return False
+
+    # Economic resilience score validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["economic_resilience_score"])
+        if abs(val - 0.8125055724793637) <= 0.01:
+          return True
+        return False
+
+    # GDP correlation with market cap validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["gdp_correlation_with_market_cap"])
+        if abs(val - 0.9036257555631304) <= 0.01:
+          return True
+        return False
+
+    # Economic forecast 2025 validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["economic_forecast_2025"])
+        if abs(val - 54686.54995059967) <= 100:
+          return True
+        return False
+
+    # Economic indicators Wikipedia validation
+    - type: llm-rubric
+      weight: 4
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the economic indicators array. Score 1 only if the array contains exactly 5 valid economic indicators that would be mentioned on a Wikipedia page about GDP by country. Expected indicators include: GDP, GDP per capita, PPP, real GDP growth rate, GNI, etc. Respond JSON {count:bool,valid_indicators:bool,relevance:bool,score:number}"},
+          {"role":"user","content":"Economic indicators: {{output.economic_indicators_wikipedia}}"}
+        ]
+      threshold: 0.99
+
+    # Current exchange rates validation
+    - type: python
+      weight: 2
+      value: |
+        import requests
+        import json
+        
+        exchange_rates = output.get('current_exchange_rates', {})
+        
+        if not isinstance(exchange_rates, dict):
+            return False
+        
+        required_currencies = ['EUR', 'GBP', 'JPY', 'CNY']
+        if not all(currency in exchange_rates for currency in required_currencies):
+            return False
+        
+        try:
+            # Fetch actual exchange rates
+            response = requests.get("https://api.exchangerate-api.com/v4/latest/USD", timeout=10)
+            if response.status_code == 200:
+                actual_data = response.json()
+                actual_rates = actual_data['rates']
+                
+                # Check if reported values are within reasonable range of actual
+                for currency in required_currencies:
+                    if currency in actual_rates:
+                        actual_rate = float(actual_rates[currency])
+                        reported_rate = float(exchange_rates.get(currency, 0))
+                        
+                        # Allow 10% deviation from actual rates
+                        if abs(reported_rate - actual_rate) / actual_rate > 0.1:
+                            return False
+                
+                return True
+            else:
+                # If API fails, just check if values are reasonable
+                return all(isinstance(exchange_rates.get(curr), (int, float)) and exchange_rates.get(curr) > 0 
+                          for curr in required_currencies)
+        except:
+            # If API fails, just check if values are reasonable
+            try:
+                return all(isinstance(exchange_rates.get(curr), (int, float)) and exchange_rates.get(curr) > 0 
+                          for curr in required_currencies)
+            except:
+                return False
+
+    # GDP growth time series chart validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the GDP growth time series chart. Score 1 only if (a) line chart showing GDP trends by country over time; (b) multiple country lines clearly visible; (c) axes labeled with years and GDP values; (d) file size < 100 kB. Respond JSON {timeseries:bool,countries:bool,axes:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["gdp_growth_timeseries"]}}"}},
+            {"type":"text","text":"Line chart showing GDP growth trends by country"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Market cap vs GDP scatter plot validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the market cap vs GDP scatter plot. Score 1 only if (a) scatter plot with points representing countries; (b) clear regression line visible; (c) axes labeled with GDP and market cap values; (d) file size < 100 kB. Respond JSON {scatter:bool,regression:bool,axes:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["market_cap_vs_gdp_scatter"]}}"}},
+            {"type":"text","text":"Scatter plot of market cap vs GDP with regression line"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Financial centers map validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the financial centers map. Score 1 only if (a) world map showing financial center locations; (b) points/markers clearly visible on map; (c) geographic world layout clearly visible; (d) file size < 100 kB. Respond JSON {worldmap:bool,markers:bool,geographic:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["financial_centers_map"]}}"}},
+            {"type":"text","text":"World map showing financial center locations"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Financial network graph validation
+    - type: llm-rubric
+      weight: 6
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the financial network graph. Score 1 only if (a) network visualization showing relationships between financial centers; (b) nodes and edges clearly visible; (c) centers connected within regions; (d) file size < 100 kB. Respond JSON {network:bool,connections:bool,visibility:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["financial_network_graph"]}}"}},
+            {"type":"text","text":"Network visualization showing relationships between financial centers"}
+          ]}
+        ]
+      threshold: 0.99

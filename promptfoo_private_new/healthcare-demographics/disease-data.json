@@ -1,0 +1,20 @@
+[
+  {"disease": "COVID-19", "year": 2020, "global_cases": 82649779, "global_deaths": 1810813, "case_fatality_rate": 2.19},
+  {"disease": "COVID-19", "year": 2021, "global_cases": 267712438, "global_deaths": 5288888, "case_fatality_rate": 1.98},
+  {"disease": "COVID-19", "year": 2022, "global_cases": 645343189, "global_deaths": 6664866, "case_fatality_rate": 1.03},
+  {"disease": "Tuberculosis", "year": 2020, "global_cases": 9900000, "global_deaths": 1300000, "case_fatality_rate": 13.13},
+  {"disease": "Tuberculosis", "year": 2021, "global_cases": 10600000, "global_deaths": 1600000, "case_fatality_rate": 15.09},
+  {"disease": "Tuberculosis", "year": 2022, "global_cases": 10600000, "global_deaths": 1300000, "case_fatality_rate": 12.26},
+  {"disease": "Malaria", "year": 2020, "global_cases": 241000000, "global_deaths": 627000, "case_fatality_rate": 0.26},
+  {"disease": "Malaria", "year": 2021, "global_cases": 247000000, "global_deaths": 619000, "case_fatality_rate": 0.25},
+  {"disease": "Malaria", "year": 2022, "global_cases": 249000000, "global_deaths": 608000, "case_fatality_rate": 0.24},
+  {"disease": "HIV/AIDS", "year": 2020, "global_cases": 37700000, "global_deaths": 680000, "case_fatality_rate": 1.80},
+  {"disease": "HIV/AIDS", "year": 2021, "global_cases": 38400000, "global_deaths": 650000, "case_fatality_rate": 1.69},
+  {"disease": "HIV/AIDS", "year": 2022, "global_cases": 39000000, "global_deaths": 630000, "case_fatality_rate": 1.62},
+  {"disease": "Influenza", "year": 2020, "global_cases": 45000000, "global_deaths": 400000, "case_fatality_rate": 0.89},
+  {"disease": "Influenza", "year": 2021, "global_cases": 52000000, "global_deaths": 380000, "case_fatality_rate": 0.73},
+  {"disease": "Influenza", "year": 2022, "global_cases": 48000000, "global_deaths": 390000, "case_fatality_rate": 0.81},
+  {"disease": "Hepatitis B", "year": 2020, "global_cases": 296000000, "global_deaths": 820000, "case_fatality_rate": 0.28},
+  {"disease": "Hepatitis B", "year": 2021, "global_cases": 296000000, "global_deaths": 800000, "case_fatality_rate": 0.27},
+  {"disease": "Hepatitis B", "year": 2022, "global_cases": 296000000, "global_deaths": 780000, "case_fatality_rate": 0.26}
+]

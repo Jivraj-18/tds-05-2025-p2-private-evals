@@ -1,0 +1,45 @@
+Use the provided healthcare and demographic datasets and external APIs to perform comprehensive health outcomes analysis.
+
+Datasets provided:
+- `health-indicators.csv`: Life expectancy, infant mortality, and healthcare expenditure by country (2020-2022)
+- `disease-data.json`: Global disease statistics including cases, deaths, and case fatality rates
+- `hospitals.json`: World's top hospitals with rankings, locations, and bed capacity
+
+External data sources to use:
+1. Get current disease outbreak information from `https://disease.sh/v3/covid-19/all` (free COVID-19 API)
+2. Extract health statistics from the Wikipedia page "List of countries by life expectancy" at:
+   `https://en.wikipedia.org/wiki/List_of_countries_by_life_expectancy`
+
+Return a JSON object with keys:
+- `avg_life_expectancy_improvement`: average life expectancy improvement 2020-2022 across all countries
+- `highest_healthcare_spender_2022`: country with highest healthcare expenditure as % of GDP in 2022
+- `total_hospital_beds`: total number of hospital beds across all top hospitals
+- `life_expectancy_healthcare_correlation`: correlation between life expectancy and healthcare spending
+- `most_deadly_disease_2022`: disease with highest case fatality rate in 2022
+- `health_factors_wikipedia`: array of top 5 health factors mentioned in Wikipedia article
+- `current_covid_stats`: object with current global COVID cases, deaths, and recovery rate from API
+- `life_expectancy_trends`: base64 PNG line chart showing life expectancy trends by country, under 100kB
+- `healthcare_vs_outcomes_scatter`: base64 PNG scatter plot of healthcare spending vs life expectancy, under 100kB
+- `hospital_distribution_map`: base64 PNG world map showing top hospital locations, under 100kB
+- `health_forecast_2030`: predicted global life expectancy for 2030 using polynomial regression
+- `regional_health_analysis`: object with health outcomes for developed vs developing countries
+- `high_mortality_countries_count`: count of countries with infant mortality >20 per 1000 births
+- `healthcare_efficiency_score`: calculated score based on health outcomes vs spending
+- `disease_network_graph`: base64 PNG network visualization showing disease burden relationships, under 100kB
+
+Answer these questions:
+1. What is the average life expectancy improvement from 2020-2022 across all countries?
+2. Which country had the highest healthcare expenditure as % of GDP in 2022?
+3. What is the total number of hospital beds across all top hospitals?
+4. What is the correlation between life expectancy and healthcare spending?
+5. Which disease had the highest case fatality rate in 2022?
+6. What are the top 5 health factors mentioned in the Wikipedia article?
+7. What are the current global COVID-19 statistics (cases, deaths, recovery rate)?
+8. Create a time series visualization of life expectancy trends by country
+9. Create a scatter plot showing healthcare spending vs life expectancy
+10. Generate a world map showing top hospital locations
+11. Use polynomial regression to forecast global life expectancy for 2030
+12. Analyze health outcomes separately for developed and developing countries
+13. Count how many countries have infant mortality >20 per 1000 births
+14. Calculate a healthcare efficiency score based on outcomes vs spending
+15. Visualize disease burden network relationships

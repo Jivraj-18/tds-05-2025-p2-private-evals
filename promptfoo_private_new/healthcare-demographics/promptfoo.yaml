@@ -1,0 +1,236 @@
+description: "TDS Data Analyst Agent — Healthcare & Demographics Analysis (multi-disciplinary eval)"
+providers:
+  - 'exec: uv run run.py "{{ env.PROVIDER_URL }}"'
+defaultTest:
+  options:
+    provider:
+      id: openai:gpt-4.1-nano
+    transform: JSON.parse(output)
+tests:
+  - vars:
+      question: file://questions.txt
+    assert:
+    - type: is-json
+      value:
+        type: object
+        required:
+          [
+            avg_life_expectancy_improvement,
+            highest_healthcare_spender_2022,
+            total_hospital_beds,
+            life_expectancy_healthcare_correlation,
+            most_deadly_disease_2022,
+            health_factors_wikipedia,
+            current_covid_stats,
+            health_forecast_2030,
+            regional_health_analysis,
+            high_mortality_countries_count,
+            healthcare_efficiency_score,
+            life_expectancy_trends,
+            healthcare_vs_outcomes_scatter,
+            hospital_distribution_map,
+            disease_network_graph
+          ]
+        properties:
+          avg_life_expectancy_improvement: { type: number }
+          highest_healthcare_spender_2022: { type: string }
+          total_hospital_beds: { type: number }
+          life_expectancy_healthcare_correlation: { type: number }
+          most_deadly_disease_2022: { type: string }
+          health_factors_wikipedia: { type: array, minItems: 5, maxItems: 5 }
+          current_covid_stats: { type: object }
+          health_forecast_2030: { type: number }
+          regional_health_analysis: { type: object }
+          high_mortality_countries_count: { type: number }
+          healthcare_efficiency_score: { type: number }
+          life_expectancy_trends: { type: string }
+          healthcare_vs_outcomes_scatter: { type: string }
+          hospital_distribution_map: { type: string }
+          disease_network_graph: { type: string }
+      weight: 5
+
+    # Life expectancy improvement validation 
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["avg_life_expectancy_improvement"])
+        if abs(val - 0.038888888888891415) <= 0.01:
+          return True
+        return False
+
+    # Highest healthcare spender validation
+    - type: python
+      weight: 3
+      value: |
+        if output["highest_healthcare_spender_2022"].lower() == "united states":
+          return True
+        return False
+
+    # Total hospital beds validation
+    - type: python
+      weight: 3
+      value: |
+        if output["total_hospital_beds"] == 36994:
+          return True
+        return False
+
+    # Most deadly disease validation
+    - type: python
+      weight: 3
+      value: |
+        valid_diseases = ["tuberculosis", "tb"]
+        if any(disease in output["most_deadly_disease_2022"].lower() for disease in valid_diseases):
+          return True
+        return False
+
+    # High mortality countries count validation
+    - type: python
+      weight: 3
+      value: |
+        if output["high_mortality_countries_count"] == 2:
+          return True
+        return False
+
+    # Healthcare efficiency score validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["healthcare_efficiency_score"])
+        if abs(val - 9.236423058198293) <= 0.1:
+          return True
+        return False
+
+    # Life expectancy healthcare correlation validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["life_expectancy_healthcare_correlation"])
+        if abs(val - 0.42958475722476536) <= 0.01:
+          return True
+        return False
+
+    # Health forecast 2030 validation
+    - type: python
+      weight: 3
+      value: |
+        val = float(output["health_forecast_2030"])
+        if abs(val - 106.26111114770174) <= 1.0:
+          return True
+        return False
+
+    # Health factors Wikipedia validation
+    - type: llm-rubric
+      weight: 4
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the health factors array. Score 1 only if the array contains exactly 5 valid health factors that would be mentioned on a Wikipedia page about life expectancy. Expected factors include: healthcare, genetics, lifestyle, environment, disease prevalence, etc. Respond JSON {count:bool,valid_factors:bool,relevance:bool,score:number}"},
+          {"role":"user","content":"Health factors: {{output.health_factors_wikipedia}}"}
+        ]
+      threshold: 0.99
+
+    # Regional health analysis validation
+    - type: llm-rubric
+      weight: 4
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the regional health analysis object. Score 1 only if (a) contains 'developed' and 'developing' regions; (b) each region has health metrics like avg_life_expectancy, avg_infant_mortality, avg_healthcare_spending; (c) countries are appropriately categorized; (d) values are realistic. Respond JSON {structure:bool,metrics:bool,categorization:bool,realistic:bool,score:number}"},
+          {"role":"user","content":"Regional health analysis: {{output.regional_health_analysis}}"}
+        ]
+      threshold: 0.99
+
+    # Current COVID stats validation
+    - type: python
+      weight: 2
+      value: |
+        import requests
+        import json
+        
+        covid_stats = output.get('current_covid_stats', {})
+        
+        if not isinstance(covid_stats, dict):
+            return False
+        
+        required_fields = ['cases', 'deaths', 'recovered']
+        if not all(field in covid_stats for field in required_fields):
+            return False
+        
+        try:
+            # Fetch actual COVID data
+            response = requests.get("https://disease.sh/v3/covid-19/all", timeout=10)
+            if response.status_code == 200:
+                actual_data = response.json()
+                
+                # Check if reported values are reasonable (within 10% of actual)
+                for field in required_fields:
+                    if field in actual_data:
+                        actual_val = float(actual_data[field])
+                        reported_val = float(covid_stats.get(field, 0))
+                        
+                        if actual_val > 0:
+                            if abs(reported_val - actual_val) / actual_val > 0.1:
+                                return False
+                
+                return True
+            else:
+                # If API fails, just check if values are reasonable
+                return all(isinstance(covid_stats.get(field), (int, float)) and covid_stats.get(field) > 0 
+                          for field in required_fields)
+        except:
+            # If API fails, just check if values are reasonable
+            try:
+                return all(isinstance(covid_stats.get(field), (int, float)) and covid_stats.get(field) > 0 
+                          for field in required_fields)
+            except:
+                return False
+
+    # Life expectancy trends chart validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the life expectancy trends chart. Score 1 only if (a) line chart showing life expectancy trends by country over time; (b) multiple country lines clearly visible; (c) axes labeled with years and life expectancy values; (d) file size < 100 kB. Respond JSON {timeseries:bool,countries:bool,axes:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["life_expectancy_trends"]}}"}},
+            {"type":"text","text":"Line chart showing life expectancy trends by country"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Healthcare vs outcomes scatter plot validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the healthcare spending vs life expectancy scatter plot. Score 1 only if (a) scatter plot with points representing countries; (b) axes showing healthcare spending and life expectancy; (c) clear correlation pattern visible; (d) file size < 100 kB. Respond JSON {scatter:bool,axes:bool,correlation:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["healthcare_vs_outcomes_scatter"]}}"}},
+            {"type":"text","text":"Scatter plot of healthcare spending vs life expectancy"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Hospital distribution map validation
+    - type: llm-rubric
+      weight: 8
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the hospital distribution map. Score 1 only if (a) world map showing hospital locations; (b) points/markers clearly visible on map; (c) geographic world layout clearly visible; (d) file size < 100 kB. Respond JSON {worldmap:bool,markers:bool,geographic:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["hospital_distribution_map"]}}"}},
+            {"type":"text","text":"World map showing top hospital locations"}
+          ]}
+        ]
+      threshold: 0.99
+
+    # Disease network graph validation
+    - type: llm-rubric
+      weight: 6
+      rubricPrompt: |
+        [
+          {"role":"system","content":"Grade the disease network graph. Score 1 only if (a) network visualization showing disease relationships; (b) nodes and edges clearly visible; (c) disease burden patterns visible; (d) file size < 100 kB. Respond JSON {network:bool,connections:bool,patterns:bool,size:bool,score:number}"},
+          {"role":"user","content":[
+            {"type":"image_url","image_url":{"url":"data:image/png;base64,{{output["disease_network_graph"]}}"}},
+            {"type":"text","text":"Network visualization showing disease burden relationships"}
+          ]}
+        ]
+      threshold: 0.99

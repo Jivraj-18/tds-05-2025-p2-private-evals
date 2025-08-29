@@ -1,0 +1,14 @@
+[
+  {"hospital": "Mayo Clinic", "city": "Rochester", "country": "United States", "latitude": 44.0225, "longitude": -92.4699, "world_rank": 1, "beds": 1265},
+  {"hospital": "Cleveland Clinic", "city": "Cleveland", "country": "United States", "latitude": 41.4993, "longitude": -81.6944, "world_rank": 2, "beds": 1285},
+  {"hospital": "Johns Hopkins Hospital", "city": "Baltimore", "country": "United States", "latitude": 39.2904, "longitude": -76.6122, "world_rank": 3, "beds": 1154},
+  {"hospital": "Toronto General Hospital", "city": "Toronto", "country": "Canada", "latitude": 43.6532, "longitude": -79.3832, "world_rank": 4, "beds": 727},
+  {"hospital": "Charité - Universitätsmedizin Berlin", "city": "Berlin", "country": "Germany", "latitude": 52.5200, "longitude": 13.4050, "world_rank": 5, "beds": 3011},
+  {"hospital": "Karolinska University Hospital", "city": "Stockholm", "country": "Sweden", "latitude": 59.3293, "longitude": 18.0686, "world_rank": 6, "beds": 1600},
+  {"hospital": "Singapore General Hospital", "city": "Singapore", "country": "Singapore", "latitude": 1.2800, "longitude": 103.8365, "world_rank": 7, "beds": 1785},
+  {"hospital": "The University of Tokyo Hospital", "city": "Tokyo", "country": "Japan", "latitude": 35.6762, "longitude": 139.6503, "world_rank": 8, "beds": 1217},
+  {"hospital": "Assistance Publique Hôpitaux de Paris", "city": "Paris", "country": "France", "latitude": 48.8566, "longitude": 2.3522, "world_rank": 9, "beds": 21000},
+  {"hospital": "University College London Hospitals", "city": "London", "country": "United Kingdom", "latitude": 51.5074, "longitude": -0.1278, "world_rank": 10, "beds": 665},
+  {"hospital": "Sheba Medical Center", "city": "Tel Aviv", "country": "Israel", "latitude": 32.0853, "longitude": 34.7818, "world_rank": 11, "beds": 1990},
+  {"hospital": "King Faisal Specialist Hospital", "city": "Riyadh", "country": "Saudi Arabia", "latitude": 24.7136, "longitude": 46.6753, "world_rank": 12, "beds": 1295}
+]

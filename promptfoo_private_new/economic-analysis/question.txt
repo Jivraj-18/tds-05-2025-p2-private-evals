@@ -1,0 +1,45 @@
+Use the provided economic datasets and external APIs to perform comprehensive economic growth analysis.
+
+Datasets provided:
+- `gdp-data.csv`: GDP data by country and year (2020-2022) with population
+- `stock-market-data.json`: Stock market indices and market capitalization data
+- `financial-centers.json`: Global financial centers with rankings and locations
+
+External data sources to use:
+1. Get current exchange rates from `https://api.exchangerate-api.com/v4/latest/USD` (free, no API key required)
+2. Extract economic indicators from the Wikipedia page "List of countries by GDP (nominal)" at:
+   `https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)`
+
+Return a JSON object with keys:
+- `avg_gdp_growth_2020_2022`: average GDP growth rate across all countries 2020-2022
+- `highest_gdp_per_capita_2022`: country with highest GDP per capita in 2022
+- `financial_centers_count`: total number of financial centers in dataset
+- `gdp_correlation_with_market_cap`: correlation between GDP and stock market cap
+- `top_performing_stock_index`: stock index with highest growth 2020-2022
+- `economic_indicators_wikipedia`: array of top 5 economic indicators mentioned in Wikipedia article
+- `current_exchange_rates`: object with USD exchange rates for EUR, GBP, JPY, CNY from API
+- `gdp_growth_timeseries`: base64 PNG line chart showing GDP growth trends by country, under 100kB
+- `market_cap_vs_gdp_scatter`: base64 PNG scatter plot of market cap vs GDP with regression line, under 100kB
+- `financial_centers_map`: base64 PNG world map showing financial center locations, under 100kB
+- `economic_forecast_2025`: predicted global GDP for 2025 using polynomial regression
+- `regional_economic_analysis`: object with average GDP growth for developed vs developing countries
+- `high_growth_countries_count`: count of countries with >5% GDP growth in any year
+- `economic_resilience_score`: calculated score based on GDP volatility and market stability
+- `financial_network_graph`: base64 PNG network visualization showing relationships between financial centers (connect centers within same region), under 100kB
+
+Answer these questions:
+1. What is the average GDP growth rate across all countries from 2020-2022?
+2. Which country had the highest GDP per capita in 2022?
+3. How many financial centers are in the provided dataset?
+4. What is the correlation between country GDP and stock market capitalization?
+5. Which stock index had the highest growth from 2020-2022?
+6. What are the top 5 economic indicators mentioned in the Wikipedia article?
+7. What are the current USD exchange rates for EUR, GBP, JPY, and CNY?
+8. Create a time series visualization of GDP growth trends by country
+9. Create a scatter plot showing market cap vs GDP with regression line
+10. Generate a world map showing financial center locations
+11. Use polynomial regression to forecast global GDP for 2025
+12. Analyze economic performance separately for developed and developing countries
+13. Count how many countries had GDP growth >5% in any year
+14. Calculate an economic resilience score based on GDP volatility and market stability
+15. Visualize financial center network connectivity within regions

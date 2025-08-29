@@ -1,0 +1,20 @@
+[
+  {"country": "United States", "stock_index": "S&P 500", "year": 2020, "index_value": 3756.07, "market_cap_usd_trillions": 38.2},
+  {"country": "United States", "stock_index": "S&P 500", "year": 2021, "index_value": 4766.18, "market_cap_usd_trillions": 48.4},
+  {"country": "United States", "stock_index": "S&P 500", "year": 2022, "index_value": 3839.50, "market_cap_usd_trillions": 40.1},
+  {"country": "China", "stock_index": "Shanghai Composite", "year": 2020, "index_value": 3473.07, "market_cap_usd_trillions": 11.2},
+  {"country": "China", "stock_index": "Shanghai Composite", "year": 2021, "index_value": 3639.78, "market_cap_usd_trillions": 12.8},
+  {"country": "China", "stock_index": "Shanghai Composite", "year": 2022, "index_value": 3089.26, "market_cap_usd_trillions": 10.5},
+  {"country": "Japan", "stock_index": "Nikkei 225", "year": 2020, "index_value": 27444.17, "market_cap_usd_trillions": 6.2},
+  {"country": "Japan", "stock_index": "Nikkei 225", "year": 2021, "index_value": 28791.71, "market_cap_usd_trillions": 6.8},
+  {"country": "Japan", "stock_index": "Nikkei 225", "year": 2022, "index_value": 26094.50, "market_cap_usd_trillions": 5.9},
+  {"country": "Germany", "stock_index": "DAX", "year": 2020, "index_value": 13718.78, "market_cap_usd_trillions": 2.1},
+  {"country": "Germany", "stock_index": "DAX", "year": 2021, "index_value": 15884.86, "market_cap_usd_trillions": 2.7},
+  {"country": "Germany", "stock_index": "DAX", "year": 2022, "index_value": 12938.17, "market_cap_usd_trillions": 2.2},
+  {"country": "United Kingdom", "stock_index": "FTSE 100", "year": 2020, "index_value": 6460.52, "market_cap_usd_trillions": 3.1},
+  {"country": "United Kingdom", "stock_index": "FTSE 100", "year": 2021, "index_value": 7384.54, "market_cap_usd_trillions": 3.9},
+  {"country": "United Kingdom", "stock_index": "FTSE 100", "year": 2022, "index_value": 7451.74, "market_cap_usd_trillions": 3.8},
+  {"country": "India", "stock_index": "BSE Sensex", "year": 2020, "index_value": 47751.33, "market_cap_usd_trillions": 2.5},
+  {"country": "India", "stock_index": "BSE Sensex", "year": 2021, "index_value": 58253.82, "market_cap_usd_trillions": 3.4},
+  {"country": "India", "stock_index": "BSE Sensex", "year": 2022, "index_value": 60840.74, "market_cap_usd_trillions": 3.2}
+]
